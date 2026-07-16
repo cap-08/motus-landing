@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Motus — One Science of Movement</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=Inter:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --base:#0B0E14;
+    --panel:#12161F;
+    --card:#1B212F;
+    --line:#262E3F;
+    --cyan:#3FD0FF;
+    --cyan-dim:#1E4A5C;
+    --amber:#FFB454;
+    --amber-dim:#5C4526;
+    --text:#EDEFF4;
+    --muted:#8B93A6;
+    --display: 'Space Grotesk', sans-serif;
+    --body: 'Inter', sans-serif;
+    --mono: 'IBM Plex Mono', monospace;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  html{scroll-behavior:smooth;}
+  body{
+    background:var(--base);
+    color:var(--text);
+    font-family:var(--body);
+    line-height:1.5;
+    overflow-x:hidden;
+  }
+  @media (prefers-reduced-motion: reduce){
+    html{scroll-behavior:auto;}
+    *{animation-duration:0.01ms !important; transition-duration:0.01ms !important;}
+  }
+  a{color:inherit; text-decoration:none;}
+  img,svg{display:block; max-width:100%;}
+  .wrap{max-width:1240px; margin:0 auto; padding:0 32px;}
+  .eyebrow{
+    font-family:var(--mono);
+    font-size:12.5px;
+    letter-spacing:0.14em;
+    text-transform:uppercase;
+    display:flex; align-items:center; gap:10px;
+  }
+  .eyebrow .dot{width:6px; height:6px; border-radius:50%; display:inline-block;}
+  h1,h2,h3{font-family:var(--display); font-weight:600; letter-spacing:-0.01em;}
+  .btn{
+    font-family:var(--mono);
+    font-size:13px;
+    letter-spacing:0.04em;
+    text-transform:uppercase;
+    padding:13px 22px;
+    border-radius:2px;
+    border:1px solid var(--line);
+    display:inline-flex; align-items:center; gap:8px;
+    transition:border-color .2s ease, transform .2s ease, background .2s ease;
+    cursor:pointer;
+    background:transparent;
+  }
+  .btn:hover{transform:translateY(-1px);}
+  .btn.cyan{border-color:var(--cyan); color:var(--cyan);}
+  .btn.cyan:hover{background:rgba(63,208,255,0.08);}
+  .btn.amber{border-color:var(--amber); color:var(--amber);}
+  .btn.amber:hover{background:rgba(255,180,84,0.08);}
+  .btn.solid{background:var(--text); color:var(--base); border-color:var(--text);}
+  .btn.solid:hover{background:#fff;}
+
+  :focus-visible{outline:2px solid var(--cyan); outline-offset:3px;}
+
+  /* ---------- NAV ---------- */
+  header{
+    position:fixed; top:0; left:0; right:0; z-index:100;
+    background:rgba(11,14,20,0.82);
+    backdrop-filter:blur(10px);
+    border-bottom:1px solid var(--line);
+  }
+  nav{
+    max-width:1240px; margin:0 auto; padding:18px 32px;
+    display:flex; align-items:center; justify-content:space-between;
+  }
+  .logo{
+    font-family:var(--display); font-weight:700; font-size:20px; letter-spacing:-0.02em;
+    display:flex; align-items:center; gap:9px;
+  }
+  .logo .mark{width:18px; height:18px;}
+  .navlinks{display:flex; gap:34px; align-items:center;}
+  .navlinks a{font-size:14px; color:var(--muted); transition:color .2s;}
+  .navlinks a:hover{color:var(--text);}
+  .navlinks a.split-r{color:var(--cyan);} 
+  .navlinks a.split-h{color:var(--amber);}
+  .navburger{display:none; flex-direction:column; gap:5px; cursor:pointer; background:none; border:none;}
+  .navburger span{width:22px; height:2px; background:var(--text);}
+
+  /* ---------- SPINE (signature element) ---------- */
+  .spine-svg{
+    position:absolute; top:0; left:50%; transform:translateX(-50%);
+    height:100%; width:100%; max-width:1240px;
+    pointer-events:none; z-index:1;
+  }
+  #spine-path-c, #spine-path-a{
+    stroke-dasharray:2000;
+    stroke-dashoffset:2000;
+    animation:draw 2.4s ease forwards .3s;
+  }
+  @keyframes draw{ to{ stroke-dashoffset:0; } }
+  .joint{ animation:pulse 2.6s ease-in-out infinite; }
+  @keyframes pulse{ 0%,100%{opacity:.55;} 50%{opacity:1;} }
+
+  /* ---------- HERO ---------- */
+  .hero{
+    position:relative;
+    min-height:100vh;
+    display:flex; flex-direction:column; justify-content:center;
+    padding-top:90px;
+    overflow:hidden;
+  }
+  .hero-grid{
+    position:relative; z-index:2;
+    max-width:1240px; margin:0 auto; padding:0 32px;
+    display:grid; grid-template-columns:1fr auto 1fr; gap:28px; align-items:center;
+  }
+  .hero-side{ display:flex; flex-direction:column; gap:22px; }
+  .hero-side.left{ align-items:flex-start; text-align:left; }
+  .hero-side.right{ align-items:flex-end; text-align:right; }
+  .hero-side .eyebrow.c{color:var(--cyan);} .hero-side .eyebrow.c .dot{background:var(--cyan); box-shadow:0 0 10px var(--cyan);}
+  .hero-side .eyebrow.a{color:var(--amber);} .hero-side .eyebrow.a .dot{background:var(--amber); box-shadow:0 0 10px var(--amber);}
+  .hero-side h2{font-size:clamp(28px,3.4vw,42px); line-height:1.05;}
+  .hero-side p{color:var(--muted); font-size:15px; max-width:320px;}
+  .hero-side.right p{margin-left:auto;}
+  .hero-illustration{width:100%; max-width:280px;}
+  .hero-center{
+    display:flex; flex-direction:column; align-items:center; gap:18px;
+    padding:0 6px;
+  }
+  .hero-center .word{
+    font-family:var(--mono); font-size:12px; letter-spacing:0.2em; color:var(--muted);
+    writing-mode:vertical-rl;
+  }
+  .hero-tagline{
+    position:relative; z-index:2;
+    text-align:center; margin:56px auto 0; max-width:640px;
+    padding:0 32px;
+  }
+  .hero-tagline h1{
+    font-size:clamp(30px,4.6vw,54px); line-height:1.08;
+  }
+  .hero-tagline h1 .c{color:var(--cyan);}
+  .hero-tagline h1 .a{color:var(--amber);}
+  .hero-tagline p{margin-top:16px; color:var(--muted); font-size:16px;}
+  .scroll-cue{
+    position:absolute; bottom:28px; left:50%; transform:translateX(-50%);
+    font-family:var(--mono); font-size:11px; color:var(--muted); letter-spacing:.14em;
+    display:flex; flex-direction:column; align-items:center; gap:8px; z-index:2;
+  }
+  .scroll-cue .bar{width:1px; height:26px; background:linear-gradient(var(--cyan),var(--amber)); animation:scrolldown 1.8s ease infinite;}
+  @keyframes scrolldown{ 0%{opacity:0; transform:scaleY(0.3); transform-origin:top;} 50%{opacity:1; transform:scaleY(1);} 100%{opacity:0; transform:scaleY(0.3); transform-origin:bottom;} }
+
+  /* ---------- STATS STRIP ---------- */
+  .stats{
+    border-top:1px solid var(--line); border-bottom:1px solid var(--line);
+    background:var(--panel);
+  }
+  .stats-grid{
+    max-width:1240px; margin:0 auto; padding:0 32px;
+    display:grid; grid-template-columns:repeat(4,1fr);
+  }
+  .stat{
+    padding:28px 20px; border-left:1px solid var(--line);
+  }
+  .stat:first-child{border-left:none;}
+  .stat .num{font-family:var(--display); font-size:30px; font-weight:700;}
+  .stat.c .num{color:var(--cyan);}
+  .stat.a .num{color:var(--amber);}
+  .stat .lbl{font-family:var(--mono); font-size:11.5px; color:var(--muted); text-transform:uppercase; letter-spacing:.08em; margin-top:6px;}
+
+  /* ---------- DOMAIN SECTIONS ---------- */
+  .domain{ position:relative; padding:120px 0; overflow:hidden; }
+  .domain.robotics{ background:radial-gradient(ellipse at 15% 20%, rgba(63,208,255,0.06), transparent 55%); }
+  .domain.rehab{ background:radial-gradient(ellipse at 85% 20%, rgba(255,180,84,0.06), transparent 55%); }
+  .domain-head{
+    display:grid; grid-template-columns:1fr 1fr; gap:40px; align-items:end; margin-bottom:64px;
+  }
+  .domain.rehab .domain-head{ direction:rtl; }
+  .domain.rehab .domain-head > *{ direction:ltr; }
+  .domain-head h2{font-size:clamp(28px,3.6vw,44px); margin-top:14px;}
+  .domain-head p{color:var(--muted); font-size:15.5px; max-width:420px;}
+  .domain.robotics .eyebrow{color:var(--cyan);}
+  .domain.robotics .eyebrow .dot{background:var(--cyan); box-shadow:0 0 8px var(--cyan);}
+  .domain.rehab .eyebrow{color:var(--amber);}
+  .domain.rehab .eyebrow .dot{background:var(--amber); box-shadow:0 0 8px var(--amber);}
+
+  .cards{ display:grid; grid-template-columns:repeat(3,1fr); gap:24px; }
+  .card{
+    background:var(--card); border:1px solid var(--line); border-radius:4px;
+    padding:26px; display:flex; flex-direction:column; gap:14px;
+    transition:transform .25s ease, border-color .25s ease;
+  }
+  .card:hover{ transform:translateY(-4px); }
+  .domain.robotics .card:hover{ border-color:var(--cyan); }
+  .domain.rehab .card:hover{ border-color:var(--amber); }
+  .card .card-icon{ width:100%; height:150px; border-radius:3px; background:var(--panel); display:flex; align-items:center; justify-content:center; }
+  .card h3{ font-size:18px; }
+  .card .tag{ font-family:var(--mono); font-size:11px; letter-spacing:.08em; text-transform:uppercase; }
+  .domain.robotics .card .tag{ color:var(--cyan); }
+  .domain.rehab .card .tag{ color:var(--amber); }
+  .card p{ color:var(--muted); font-size:14px; }
+  .specs{ display:flex; flex-wrap:wrap; gap:8px; margin-top:auto; padding-top:12px; border-top:1px solid var(--line); }
+  .specs span{ font-family:var(--mono); font-size:11px; color:var(--muted); }
+  .specs span b{ color:var(--text); font-weight:500; }
+
+  /* ---------- CORE / SPINE SECTION ---------- */
+  .core{
+    position:relative; padding:110px 0; background:var(--panel);
+    border-top:1px solid var(--line); border-bottom:1px solid var(--line);
+  }
+  .core-inner{ text-align:center; max-width:680px; margin:0 auto; position:relative; z-index:2; }
+  .core h2{ font-size:clamp(26px,3.4vw,38px); }
+  .core h2 span{ background:linear-gradient(90deg,var(--cyan),var(--amber)); -webkit-background-clip:text; background-clip:text; color:transparent; }
+  .core p{ color:var(--muted); margin-top:14px; font-size:15.5px; }
+  .core-cols{
+    margin-top:64px; display:grid; grid-template-columns:repeat(4,1fr); gap:24px;
+  }
+  .core-col{ padding:22px 18px; border-top:2px solid var(--line); text-align:left; }
+  .core-col .k{ font-family:var(--mono); font-size:11px; color:var(--muted); letter-spacing:.08em; }
+  .core-col h4{ font-family:var(--display); font-size:16px; margin-top:8px; font-weight:600; }
+  .core-col p{ color:var(--muted); font-size:13.5px; margin-top:6px; }
+
+  /* ---------- CTA ---------- */
+  .cta{ position:relative; padding:130px 0; text-align:center; overflow:hidden; }
+  .cta h2{ font-size:clamp(30px,4.4vw,50px); position:relative; z-index:2; }
+  .cta h2 .c{color:var(--cyan);} .cta h2 .a{color:var(--amber);}
+  .cta p{ color:var(--muted); margin:16px auto 34px; max-width:460px; position:relative; z-index:2; }
+  .cta-btns{ display:flex; gap:16px; justify-content:center; position:relative; z-index:2; flex-wrap:wrap; }
+
+  /* ---------- FOOTER ---------- */
+  footer{ border-top:1px solid var(--line); padding:48px 0 32px; }
+  .foot-grid{ display:grid; grid-template-columns:1.4fr 1fr 1fr 1fr; gap:32px; margin-bottom:40px; }
+  .foot-col h5{ font-family:var(--mono); font-size:11.5px; letter-spacing:.08em; text-transform:uppercase; color:var(--muted); margin-bottom:14px; }
+  .foot-col a, .foot-col p{ display:block; font-size:14px; color:var(--muted); margin-bottom:9px; }
+  .foot-col a:hover{ color:var(--text); }
+  .foot-bottom{ display:flex; justify-content:space-between; align-items:center; border-top:1px solid var(--line); padding-top:24px; font-size:12.5px; color:var(--muted); font-family:var(--mono); flex-wrap:wrap; gap:12px; }
+
+  /* ---------- reveal on scroll ---------- */
+  .reveal{ opacity:0; transform:translateY(18px); transition:opacity .7s ease, transform .7s ease; }
+  .reveal.in{ opacity:1; transform:translateY(0); }
+
+  /* ---------- RESPONSIVE ---------- */
+  @media (max-width:920px){
+    .navlinks{ display:none; }
+    .navburger{ display:flex; }
+    .hero-grid{ grid-template-columns:1fr; gap:44px; }
+    .hero-side.right{ align-items:flex-start; text-align:left; }
+    .hero-side.right p{ margin-left:0; }
+    .hero-center{ order:-1; flex-direction:row; }
+    .hero-center .word{ writing-mode:horizontal-tb; }
+    .stats-grid{ grid-template-columns:repeat(2,1fr); }
+    .stat:nth-child(3){ border-left:none; }
+    .stat{ border-top:1px solid var(--line); }
+    .stat:nth-child(1),.stat:nth-child(2){ border-top:none; }
+    .domain-head{ grid-template-columns:1fr; }
+    .domain.rehab .domain-head{ direction:ltr; }
+    .cards{ grid-template-columns:1fr; }
+    .core-cols{ grid-template-columns:repeat(2,1fr); }
+    .foot-grid{ grid-template-columns:1fr 1fr; }
+  }
+  @media (max-width:520px){
+    .core-cols{ grid-template-columns:1fr; }
+    .foot-grid{ grid-template-columns:1fr; }
+    .wrap, nav, .hero-grid, .stats-grid{ padding-left:20px; padding-right:20px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <nav>
+    <div class="logo">
+      <svg class="mark" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="3" r="2" fill="#3FD0FF"/><line x1="9" y1="5" x2="9" y2="12" stroke="#8B93A6" stroke-width="1.4"/><circle cx="9" cy="15" r="2" fill="#FFB454"/></svg>
+      MOTUS
+    </div>
+    <div class="navlinks">
+      <a href="#robotics" class="split-r">Robotics</a>
+      <a href="#rehab" class="split-h">Rehabilitation</a>
+      <a href="#core">Approach</a>
+      <a href="#contact" class="btn cyan" style="padding:9px 16px;">Talk to us</a>
+    </div>
+    <button class="navburger" id="burger" aria-label="Open menu"><span></span><span></span><span></span></button>
+  </nav>
+</header>
+
+<!-- ===================== HERO ===================== -->
+<section class="hero">
+  <svg class="spine-svg" viewBox="0 0 1240 900" preserveAspectRatio="xMidYMin meet" aria-hidden="true">
+    <path id="spine-path-c" d="M 590 0 C 590 140, 470 160, 460 320 C 452 440, 560 460, 580 620" stroke="#3FD0FF" stroke-width="1.4" fill="none" opacity="0.55"/>
+    <path id="spine-path-a" d="M 650 0 C 650 140, 770 160, 780 320 C 788 440, 680 460, 660 620" stroke="#FFB454" stroke-width="1.4" fill="none" opacity="0.55"/>
+    <circle class="joint" cx="590" cy="0" r="3" fill="#3FD0FF"/>
+    <circle class="joint" cx="460" cy="320" r="3" fill="#3FD0FF"/>
+    <circle class="joint" cx="580" cy="620" r="3" fill="#3FD0FF"/>
+    <circle class="joint" cx="650" cy="0" r="3" fill="#FFB454"/>
+    <circle class="joint" cx="780" cy="320" r="3" fill="#FFB454"/>
+    <circle class="joint" cx="660" cy="620" r="3" fill="#FFB454"/>
+  </svg>
+
+  <div class="hero-grid">
+    <div class="hero-side left reveal">
+      <span class="eyebrow c"><span class="dot"></span>Domain 01</span>
+      <h2>Humanoid<br>Robotics</h2>
+      <p>Bipedal platforms and manipulators built to work, walk, and reason alongside people.</p>
+      <svg class="hero-illustration" viewBox="0 0 200 240" aria-hidden="true">
+        <circle cx="100" cy="30" r="18" fill="none" stroke="#3FD0FF" stroke-width="1.6"/>
+        <line x1="100" y1="48" x2="100" y2="120" stroke="#3FD0FF" stroke-width="1.6"/>
+        <rect x="78" y="60" width="44" height="42" rx="4" fill="none" stroke="#3FD0FF" stroke-width="1.2" opacity="0.6"/>
+        <circle cx="100" cy="81" r="10" fill="none" stroke="#3FD0FF" stroke-width="1" opacity="0.7"/>
+        <line x1="100" y1="70" x2="45" y2="110" stroke="#3FD0FF" stroke-width="1.6"/>
+        <line x1="45" y1="110" x2="35" y2="165" stroke="#3FD0FF" stroke-width="1.6"/>
+        <line x1="100" y1="70" x2="155" y2="110" stroke="#3FD0FF" stroke-width="1.6"/>
+        <line x1="155" y1="110" x2="165" y2="165" stroke="#3FD0FF" stroke-width="1.6"/>
+        <line x1="100" y1="120" x2="80" y2="185" stroke="#3FD0FF" stroke-width="1.6"/>
+        <line x1="80" y1="185" x2="75" y2="230" stroke="#3FD0FF" stroke-width="1.6"/>
+        <line x1="100" y1="120" x2="120" y2="185" stroke="#3FD0FF" stroke-width="1.6"/>
+        <line x1="120" y1="185" x2="125" y2="230" stroke="#3FD0FF" stroke-width="1.6"/>
+        <g fill="#3FD0FF">
+          <circle cx="100" cy="30" r="2.4"/><circle cx="100" cy="70" r="2.4"/>
+          <circle cx="45" cy="110" r="2.4"/><circle cx="35" cy="165" r="2.4"/>
+          <circle cx="155" cy="110" r="2.4"/><circle cx="165" cy="165" r="2.4"/>
+          <circle cx="100" cy="120" r="2.4"/><circle cx="80" cy="185" r="2.4"/>
+          <circle cx="75" cy="230" r="2.4"/><circle cx="120" cy="185" r="2.4"/><circle cx="125" cy="230" r="2.4"/>
+        </g>
+      </svg>
+    </div>
+
+    <div class="hero-center">
+      <span class="word">MOVEMENT</span>
+    </div>
+
+    <div class="hero-side right reveal">
+      <span class="eyebrow a"><span class="dot"></span>Domain 02</span>
+      <h2>Rehabilitation<br>Devices</h2>
+      <p>Wearable exoskeletons and prosthetics engineered to restore motion, one gait cycle at a time.</p>
+      <svg class="hero-illustration" viewBox="0 0 200 240" aria-hidden="true">
+        <line x1="100" y1="20" x2="100" y2="95" stroke="#FFB454" stroke-width="1.6"/>
+        <circle cx="100" cy="12" r="10" fill="none" stroke="#FFB454" stroke-width="1.2" opacity="0.7"/>
+        <line x1="100" y1="95" x2="65" y2="150" stroke="#FFB454" stroke-width="1.6"/>
+        <line x1="65" y1="150" x2="70" y2="225" stroke="#FFB454" stroke-width="1.6"/>
+        <line x1="100" y1="95" x2="135" y2="150" stroke="#FFB454" stroke-width="1.6"/>
+        <line x1="135" y1="150" x2="130" y2="225" stroke="#FFB454" stroke-width="1.6"/>
+        <rect x="52" y="128" width="26" height="44" rx="5" fill="none" stroke="#FFB454" stroke-width="1.2" opacity="0.55"/>
+        <rect x="122" y="128" width="26" height="44" rx="5" fill="none" stroke="#FFB454" stroke-width="1.2" opacity="0.55"/>
+        <rect x="55" y="185" width="20" height="30" rx="4" fill="none" stroke="#FFB454" stroke-width="1.2" opacity="0.55"/>
+        <rect x="125" y="185" width="20" height="30" rx="4" fill="none" stroke="#FFB454" stroke-width="1.2" opacity="0.55"/>
+        <g fill="#FFB454">
+          <circle cx="100" cy="95" r="2.4"/><circle cx="65" cy="150" r="2.4"/><circle cx="70" cy="225" r="2.4"/>
+          <circle cx="135" cy="150" r="2.4"/><circle cx="130" cy="225" r="2.4"/>
+        </g>
+      </svg>
+    </div>
+  </div>
+
+  <div class="hero-tagline reveal">
+    <h1>One science of <span class="c">movement</span>.<br>Two frontiers of <span class="a">human potential</span>.</h1>
+    <p>Motus designs the actuators, sensors, and control systems that let humanoid robots move like us — and let rehabilitation devices help us move again.</p>
+  </div>
+
+  <div class="scroll-cue"><span>SCROLL</span><span class="bar"></span></div>
+</section>
+
+<!-- ===================== STATS ===================== -->
+<section class="stats">
+  <div class="stats-grid">
+    <div class="stat c reveal"><div class="num">31</div><div class="lbl">Degrees of freedom · ARIA platform</div></div>
+    <div class="stat a reveal"><div class="num">0.4s</div><div class="lbl">Gait-phase response · EXO-1</div></div>
+    <div class="stat c reveal"><div class="num">120kg</div><div class="lbl">Payload class · SCOUT quadruped</div></div>
+    <div class="stat a reveal"><div class="num">94%</div><div class="lbl">Grip-intent accuracy · GRIP hand</div></div>
+  </div>
+</section>
+
+<!-- ===================== ROBOTICS ===================== -->
+<section class="domain robotics" id="robotics">
+  <div class="wrap">
+    <div class="domain-head reveal">
+      <div>
+        <span class="eyebrow"><span class="dot"></span>Domain 01 — Autonomy</span>
+        <h2>Machines that carry their own weight.</h2>
+      </div>
+      <p>Every joint in our humanoid line runs the same control loop we use to help patients relearn a step — proof that walking is walking, whether the leg is carbon fibre or human.</p>
+    </div>
+
+    <div class="cards">
+      <div class="card reveal">
+        <div class="card-icon">
+          <svg width="70" height="90" viewBox="0 0 70 90"><circle cx="35" cy="10" r="8" fill="none" stroke="#3FD0FF" stroke-width="1.4"/><line x1="35" y1="18" x2="35" y2="46" stroke="#3FD0FF" stroke-width="1.4"/><line x1="35" y1="26" x2="12" y2="42" stroke="#3FD0FF" stroke-width="1.4"/><line x1="35" y1="26" x2="58" y2="42" stroke="#3FD0FF" stroke-width="1.4"/><line x1="35" y1="46" x2="22" y2="72" stroke="#3FD0FF" stroke-width="1.4"/><line x1="35" y1="46" x2="48" y2="72" stroke="#3FD0FF" stroke-width="1.4"/></svg>
+        </div>
+        <span class="tag">Bipedal Platform</span>
+        <h3>ARIA</h3>
+        <p>A full-scale humanoid built for warehouse and field work, balancing on uneven terrain without a tether.</p>
+        <div class="specs"><span><b>172cm</b> height</span><span><b>31</b> DoF</span><span><b>4hr</b> runtime</span></div>
+      </div>
+
+      <div class="card reveal">
+        <div class="card-icon">
+          <svg width="70" height="90" viewBox="0 0 70 90"><line x1="35" y1="10" x2="35" y2="46" stroke="#3FD0FF" stroke-width="1.4"/><line x1="35" y1="46" x2="16" y2="58" stroke="#3FD0FF" stroke-width="1.4"/><line x1="16" y1="58" x2="10" y2="46" stroke="#3FD0FF" stroke-width="1.4"/><line x1="35" y1="46" x2="26" y2="60" stroke="#3FD0FF" stroke-width="1.4"/><line x1="35" y1="46" x2="35" y2="62" stroke="#3FD0FF" stroke-width="1.4"/><line x1="35" y1="46" x2="45" y2="60" stroke="#3FD0FF" stroke-width="1.4"/><line x1="35" y1="46" x2="54" y2="58" stroke="#3FD0FF" stroke-width="1.4"/></svg>
+        </div>
+        <span class="tag">Robotic Manipulator</span>
+        <h3>FLUX Hand</h3>
+        <p>A 12-degree-of-freedom hand tuned for delicate grasps, sharing its tactile stack with our prosthetic line.</p>
+        <div class="specs"><span><b>12</b> DoF</span><span><b>0.5kg</b> payload</span><span><b>±1mm</b> precision</span></div>
+      </div>
+
+      <div class="card reveal">
+        <div class="card-icon">
+          <svg width="90" height="70" viewBox="0 0 90 70"><rect x="30" y="18" width="30" height="18" rx="3" fill="none" stroke="#3FD0FF" stroke-width="1.4"/><line x1="34" y1="36" x2="24" y2="58" stroke="#3FD0FF" stroke-width="1.4"/><line x1="42" y1="36" x2="36" y2="58" stroke="#3FD0FF" stroke-width="1.4"/><line x1="48" y1="36" x2="54" y2="58" stroke="#3FD0FF" stroke-width="1.4"/><line x1="56" y1="36" x2="66" y2="58" stroke="#3FD0FF" stroke-width="1.4"/></svg>
+        </div>
+        <span class="tag">Field Robot</span>
+        <h3>SCOUT</h3>
+        <p>A quadruped for inspection and logistics in spaces built for people, not wheels.</p>
+        <div class="specs"><span><b>120kg</b> payload</span><span><b>3.2m/s</b> top speed</span><span><b>IP66</b> rated</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== SHARED CORE ===================== -->
+<section class="core" id="core">
+  <div class="wrap core-inner reveal">
+    <span class="eyebrow" style="justify-content:center; color:var(--muted);"><span class="dot" style="background:var(--muted);"></span>Shared Foundation</span>
+    <h2>Both lines run on <span>one motion engine.</span></h2>
+    <p>Robotics and rehabilitation aren't separate businesses under one roof — they're two applications of a single research programme in how bodies balance, load, and recover.</p>
+
+    <div class="core-cols">
+      <div class="core-col"><span class="k">01</span><h4>Actuation</h4><p>Series-elastic actuators tuned for compliant, human-safe torque in both domains.</p></div>
+      <div class="core-col"><span class="k">02</span><h4>Sensing</h4><p>IMU and force arrays that read intent — a footstep or a flexed muscle — in milliseconds.</p></div>
+      <div class="core-col"><span class="k">03</span><h4>Control</h4><p>A shared gait and grasp model, retrained per device but built from one biomechanical core.</p></div>
+      <div class="core-col"><span class="k">04</span><h4>Materials</h4><p>Carbon-fibre and medical-grade alloys chosen for strength-to-weight, not spectacle.</p></div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== REHABILITATION ===================== -->
+<section class="domain rehab" id="rehab">
+  <div class="wrap">
+    <div class="domain-head reveal">
+      <div>
+        <span class="eyebrow"><span class="dot"></span>Domain 02 — Recovery</span>
+        <h2>Devices that give movement back.</h2>
+      </div>
+      <p>Our rehabilitation line borrows the balance and force-control research from ARIA to help people stand, step, and grip again after injury.</p>
+    </div>
+
+    <div class="cards">
+      <div class="card reveal">
+        <div class="card-icon">
+          <svg width="70" height="90" viewBox="0 0 70 90"><line x1="35" y1="8" x2="35" y2="40" stroke="#FFB454" stroke-width="1.4"/><line x1="35" y1="40" x2="20" y2="60" stroke="#FFB454" stroke-width="1.4"/><line x1="20" y1="60" x2="23" y2="82" stroke="#FFB454" stroke-width="1.4"/><line x1="35" y1="40" x2="50" y2="60" stroke="#FFB454" stroke-width="1.4"/><line x1="50" y1="60" x2="47" y2="82" stroke="#FFB454" stroke-width="1.4"/><rect x="12" y="52" width="16" height="24" rx="3" fill="none" stroke="#FFB454" stroke-width="1" opacity="0.6"/><rect x="42" y="52" width="16" height="24" rx="3" fill="none" stroke="#FFB454" stroke-width="1" opacity="0.6"/></svg>
+        </div>
+        <span class="tag">Lower-Limb Exoskeleton</span>
+        <h3>EXO-1</h3>
+        <p>A wearable frame that assists standing and stepping for patients regaining leg strength post-injury.</p>
+        <div class="specs"><span><b>0.4s</b> phase response</span><span><b>8kg</b> total weight</span><span><b>90kg</b> user max</span></div>
+      </div>
+
+      <div class="card reveal">
+        <div class="card-icon">
+          <svg width="70" height="90" viewBox="0 0 70 90"><line x1="35" y1="14" x2="35" y2="50" stroke="#FFB454" stroke-width="1.4"/><line x1="35" y1="50" x2="16" y2="62" stroke="#FFB454" stroke-width="1.4"/><line x1="16" y1="62" x2="10" y2="50" stroke="#FFB454" stroke-width="1.4"/><line x1="35" y1="50" x2="26" y2="64" stroke="#FFB454" stroke-width="1.4"/><line x1="35" y1="50" x2="35" y2="66" stroke="#FFB454" stroke-width="1.4"/><line x1="35" y1="50" x2="45" y2="64" stroke="#FFB454" stroke-width="1.4"/><line x1="35" y1="50" x2="54" y2="62" stroke="#FFB454" stroke-width="1.4"/></svg>
+        </div>
+        <span class="tag">Myoelectric Prosthetic</span>
+        <h3>GRIP</h3>
+        <p>A prosthetic hand that reads forearm muscle signals to form natural, adjustable grips.</p>
+        <div class="specs"><span><b>94%</b> intent accuracy</span><span><b>6</b> grip patterns</span><span><b>420g</b> weight</span></div>
+      </div>
+
+      <div class="card reveal">
+        <div class="card-icon">
+          <svg width="90" height="70" viewBox="0 0 90 70"><circle cx="45" cy="14" r="8" fill="none" stroke="#FFB454" stroke-width="1.4"/><line x1="45" y1="22" x2="45" y2="40" stroke="#FFB454" stroke-width="1.4"/><line x1="45" y1="40" x2="30" y2="56" stroke="#FFB454" stroke-width="1.4"/><line x1="45" y1="40" x2="60" y2="56" stroke="#FFB454" stroke-width="1.4"/><line x1="20" y1="56" x2="70" y2="56" stroke="#FFB454" stroke-width="1" opacity="0.5"/></svg>
+        </div>
+        <span class="tag">Robotic Gait Trainer</span>
+        <h3>STRIDE</h3>
+        <p>A clinic-based trainer that supports body weight while relearning a natural walking pattern.</p>
+        <div class="specs"><span><b>0–100%</b> body support</span><span><b>150kg</b> user max</span><span><b>Clinic</b> ready</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== CTA ===================== -->
+<section class="cta" id="contact">
+  <svg class="spine-svg" viewBox="0 0 1240 300" preserveAspectRatio="xMidYMid meet" aria-hidden="true" style="height:100%;">
+    <path d="M 460 300 C 480 200, 590 180, 620 100 C 650 180, 760 200, 780 300" stroke="url(#g1)" stroke-width="1.4" fill="none" opacity="0.6"/>
+    <defs><linearGradient id="g1" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#3FD0FF"/><stop offset="1" stop-color="#FFB454"/></linearGradient></defs>
+  </svg>
+  <div class="wrap reveal">
+    <h2>Movement is the <span class="c">constant.</span><br>The application is <span class="a">yours to choose.</span></h2>
+    <p>Whether you're building a robotics programme or a rehabilitation clinic, our engineers work from the same motion research.</p>
+    <div class="cta-btns">
+      <a href="#robotics" class="btn cyan">Explore robotics</a>
+      <a href="#rehab" class="btn amber">Explore rehabilitation</a>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== FOOTER ===================== -->
+<footer>
+  <div class="wrap">
+    <div class="foot-grid">
+      <div class="foot-col">
+        <div class="logo" style="margin-bottom:12px;">
+          <svg class="mark" viewBox="0 0 18 18" fill="none"><circle cx="9" cy="3" r="2" fill="#3FD0FF"/><line x1="9" y1="5" x2="9" y2="12" stroke="#8B93A6" stroke-width="1.4"/><circle cx="9" cy="15" r="2" fill="#FFB454"/></svg>
+          MOTUS
+        </div>
+        <p style="max-width:260px;">A deep-tech studio building the shared science behind humanoid robots and rehabilitation devices.</p>
+      </div>
+      <div class="foot-col">
+        <h5>Robotics</h5>
+        <a href="#robotics">ARIA — Humanoid</a>
+        <a href="#robotics">FLUX Hand</a>
+        <a href="#robotics">SCOUT — Quadruped</a>
+      </div>
+      <div class="foot-col">
+        <h5>Rehabilitation</h5>
+        <a href="#rehab">EXO-1 — Exoskeleton</a>
+        <a href="#rehab">GRIP — Prosthetic</a>
+        <a href="#rehab">STRIDE — Gait Trainer</a>
+      </div>
+      <div class="foot-col">
+        <h5>Company</h5>
+        <a href="#core">Approach</a>
+        <a href="#contact">Contact</a>
+      </div>
+    </div>
+    <div class="foot-bottom">
+      <span>© 2026 MOTUS. Concept design — student project.</span>
+      <span>Built with one motion engine.</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // mobile menu
+  const burger = document.getElementById('burger');
+  const navlinks = document.querySelector('.navlinks');
+  burger.addEventListener('click', () => {
+    const open = navlinks.style.display === 'flex';
+    navlinks.style.display = open ? 'none' : 'flex';
+    navlinks.style.flexDirection = 'column';
+    navlinks.style.position = 'absolute';
+    navlinks.style.top = '64px';
+    navlinks.style.right = '20px';
+    navlinks.style.background = '#12161F';
+    navlinks.style.border = '1px solid #262E3F';
+    navlinks.style.padding = '16px 22px';
+    navlinks.style.gap = '16px';
+    navlinks.style.borderRadius = '4px';
+  });
+
+  // scroll reveal
+  const io = new IntersectionObserver((entries)=>{
+    entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
+  }, {threshold:0.12});
+  document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+</script>
+</body>
+</html>
