@@ -6,8 +6,7 @@ operating in two domains — **Humanoid Robotics** and **Rehabilitation Devices*
 spine" visual motif.
 
 ## View it live
-Once GitHub Pages is enabled on this repo (see below), the page will be at:
-`https://<your-username>.github.io/<repo-name>/`
+`https://cap-08.github.io/motus-landing/`
 
 ## Files
 - `index.html` — the landing page (HTML/CSS/JS, no build step needed)
